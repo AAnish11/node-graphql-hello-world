@@ -8,7 +8,8 @@ const schemaData = `
 type Query {
     sayHello: String!,
     randomInt: Int!,
-    randomfloat: Float!
+    randomfloat: Float!,
+    sayMyName(name: String!): String
 }
 `;
 // Create build schema for hello world program
@@ -24,6 +25,9 @@ const root = {
     },
     randomfloat: () => {
         return Math.random() * 10;
+    },
+    sayMyName: ({ name }) => {
+        return `Welcome ${name}, to the graphql demo`;
     }
 };
 
