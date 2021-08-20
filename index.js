@@ -1,4 +1,6 @@
-const { graphql, buildSchema } = require('graphql');
+const { buildSchema } = require('graphql');
+const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
 
 
 // Used String!, It means a function not return nullable value
@@ -17,9 +19,20 @@ const root = {
     }
 };
 
-graphql(schema, '{sayHello}', root).then(
-        resp => console.log(resp)
-    )
-    .catch(
-        err => console.log('error occured', err)
-    );
+// create app instance
+const app = express();
+
+// set graphql in app 
+
+app.use('/', graphqlHTTP({
+    schema,
+    rootValue: root,
+    graphiql: true,
+}));
+// define port
+const port = process.argv[2] || 3000; // pass custom argument via script or else use default 3000
+app.set('port', port);
+
+app.listen(app.get('port'), () => {
+    console.log(`Server running on http://localhost:${app.get('port')}`);
+});

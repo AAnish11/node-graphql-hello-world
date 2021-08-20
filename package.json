@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/AAnish11/node-graphql-hello-world#readme",
   "dependencies": {
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
     "graphql": "^15.5.1"
   }
 }
