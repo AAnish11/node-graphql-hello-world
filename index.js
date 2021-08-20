@@ -6,7 +6,9 @@ const { graphqlHTTP } = require('express-graphql');
 // Used String!, It means a function not return nullable value
 const schemaData = `
 type Query {
-    sayHello: String!
+    sayHello: String!,
+    randomInt: Int!,
+    randomfloat: Float!
 }
 `;
 // Create build schema for hello world program
@@ -16,6 +18,12 @@ const schema = buildSchema(schemaData);
 const root = {
     sayHello: () => {
         return 'Hello World';
+    },
+    randomInt: () => {
+        return Math.floor(Math.random() * 10);
+    },
+    randomfloat: () => {
+        return Math.random() * 10;
     }
 };
 
