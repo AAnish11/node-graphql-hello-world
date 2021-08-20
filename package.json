@@ -1,0 +1,26 @@
+{
+  "name": "node-graphql-hello-world",
+  "version": "1.0.0",
+  "description": "hello world program",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AAnish11/node-graphql-hello-world.git"
+  },
+  "keywords": [
+    "node",
+    "graphql"
+  ],
+  "author": "Anish Agarwal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AAnish11/node-graphql-hello-world/issues"
+  },
+  "homepage": "https://github.com/AAnish11/node-graphql-hello-world#readme",
+  "dependencies": {
+    "graphql": "^15.5.1"
+  }
+}
