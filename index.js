@@ -2,34 +2,65 @@ const { buildSchema } = require('graphql');
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 
-
+let messageId = 1;
+let messages = {};
 // Used String!, It means a function not return nullable value
 const schemaData = `
+input MessageInput {
+    content: String!,
+    author: String!
+}
+type Message {
+    id: ID!
+    content: String!,
+    author: String!
+}
+type Mutation {
+    createMessage(inputData: MessageInput!): Message,
+    updateMessage(id: ID!, inputData: MessageInput!): Message,
+}
 type Query {
-    sayHello: String!,
-    randomInt: Int!,
-    randomfloat: Float!,
-    sayMyName(name: String!): String
+    getAllMessages: [Message!],
+    getMessageById(id: ID!): Message!
 }
 `;
 // Create build schema for hello world program
 const schema = buildSchema(schemaData);
-
 // root value
 const root = {
-    sayHello: () => {
-        return 'Hello World';
+    getAllMessages: () => {
+        console.log(Object.values(messages));
+        return Object.values(messages).map(inputData => new Message(inputData.id, inputData.content, inputData.author));
     },
-    randomInt: () => {
-        return Math.floor(Math.random() * 10);
+    getMessageById: ({ id }) => {
+        const messageById = messages[id] || {};
+        return new Message(messageById.id, messageById.content, messageById.author);
     },
-    randomfloat: () => {
-        return Math.random() * 10;
+    createMessage: (data) => {
+        const { author, content } = data.inputData;
+        messages[messageId] = {
+            id: messageId,
+            author,
+            content
+        };
+        const newMessage = new Message(messageId, content, author);
+        messageId += 1;
+        return newMessage;
     },
-    sayMyName: ({ name }) => {
-        return `Welcome ${name}, to the graphql demo`;
+    updateMessage: (id, { author, content }) => {
+
     }
 };
+// Class for createing new object for messahe
+class Message {
+    constructor(id, content, author) {
+        this.id = id;
+        this.content = content;
+        this.author = author;
+    }
+}
+
+
 
 // create app instance
 const app = express();
