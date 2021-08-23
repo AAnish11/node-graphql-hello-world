@@ -29,7 +29,7 @@ const schema = buildSchema(schemaData);
 // root value
 const root = {
     getAllMessages: () => {
-        return messages;
+        return Object.values(messages).map(msg => new Message(msg.id, msg.content, msg.author));
     },
     getMessageById: ({ id }) => {
         return messages[id] || {};
