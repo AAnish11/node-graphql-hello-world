@@ -41,6 +41,12 @@ const queryType = new graphql.GraphQLObjectType({
                 return existingDatabase[id];
             }
         },
+        users: {
+            type: graphql.GraphQLList(userType),
+            resolve: (_) => {
+                return Object.values(existingDatabase);
+            }
+        }
     }
 });
 
