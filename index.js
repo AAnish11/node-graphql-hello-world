@@ -1,64 +1,50 @@
-const { buildSchema } = require('graphql');
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
+const graphql = require('graphql');
 
-let messageId = 1;
-let messages = {};
-// Used String!, It means a function not return nullable value
-const schemaData = `
-input MessageInput {
-    content: String!,
-    author: String!
-}
-type Message {
-    id: ID!
-    content: String!,
-    author: String!
-}
-type Mutation {
-    createMessage(inputData: MessageInput!): Message,
-    updateMessage(id: ID!, inputData: MessageInput!): Message,
-}
-type Query {
-    getAllMessages: [Message!],
-    getMessageById(id: ID!): Message!
-}
-`;
-// Create build schema for hello world program
-const schema = buildSchema(schemaData);
-// root value
-const root = {
-    getAllMessages: () => {
-        return Object.values(messages).map(msg => new Message(msg.id, msg.content, msg.author));
+const existingDatabase = {
+    1: {
+        name: 'Anish Agarwal',
+        mobileNumber: '+91XXXXXXXXXXXXXX'
     },
-    getMessageById: ({ id }) => {
-        return messages[id] || {};
-    },
-    createMessage: (data) => {
-        const { author, content } = data.inputData;
-        const newMessage = new Message(messageId, content, author);
-        messages[messageId] = newMessage;
-        messageId += 1;
-        return newMessage;
-    },
-    updateMessage: (data) => {
-        messageId = data.id;
-        const { author, content } = data.inputData;
-        const updatedMessage = new Message(messageId, content, author);
-        messages[messageId] = updatedMessage;
-        return updatedMessage;
+    2: {
+        name: 'Heena Agarwal',
+        mobileNumber: '+91XXXXXXXXXXXXXX'
     }
 };
-// Class for createing new object for messahe
-class Message {
-    constructor(id, content, author) {
-        this.id = id;
-        this.content = content;
-        this.author = author;
+
+// create graphql type for 
+const userType = new graphql.GraphQLObjectType({
+    name: 'user',
+    fields: {
+        name: {
+            type: graphql.GraphQLString,
+        },
+        mobileNumber: {
+            type: graphql.GraphQLString
+        }
     }
-}
+});
 
+const queryType = new graphql.GraphQLObjectType({
+    name: 'Query',
+    fields: {
+        user: {
+            type: userType,
+            args: {
+                id: {
+                    type: graphql.GraphQLString
+                }
+            },
+            resolve: (_, { id }) => {
+                console.log(id);
+                return existingDatabase[id];
+            }
+        },
+    }
+});
 
+const schema = new graphql.GraphQLSchema({ query: queryType });
 
 // create app instance
 const app = express();
@@ -67,7 +53,6 @@ const app = express();
 
 app.use('/', graphqlHTTP({
     schema,
-    rootValue: root,
     graphiql: true,
 }));
 // define port
