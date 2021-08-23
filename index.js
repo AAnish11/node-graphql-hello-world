@@ -29,26 +29,24 @@ const schema = buildSchema(schemaData);
 // root value
 const root = {
     getAllMessages: () => {
-        console.log(Object.values(messages));
-        return Object.values(messages).map(inputData => new Message(inputData.id, inputData.content, inputData.author));
+        return messages;
     },
     getMessageById: ({ id }) => {
-        const messageById = messages[id] || {};
-        return new Message(messageById.id, messageById.content, messageById.author);
+        return messages[id] || {};
     },
     createMessage: (data) => {
         const { author, content } = data.inputData;
-        messages[messageId] = {
-            id: messageId,
-            author,
-            content
-        };
         const newMessage = new Message(messageId, content, author);
+        messages[messageId] = newMessage;
         messageId += 1;
         return newMessage;
     },
-    updateMessage: (id, { author, content }) => {
-
+    updateMessage: (data) => {
+        messageId = data.id;
+        const { author, content } = data.inputData;
+        const updatedMessage = new Message(messageId, content, author);
+        messages[messageId] = updatedMessage;
+        return updatedMessage;
     }
 };
 // Class for createing new object for messahe
